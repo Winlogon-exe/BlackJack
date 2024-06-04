@@ -3,29 +3,26 @@
 
 GameResult Blackjack::play(Deck& deck) {
     dealer.resetHand();
-        player.resetHand();
+    player.resetHand();
 
-        deck.shuffle(); // Перемешиваем существующую колоду перед каждым раундом  
+    deck.shuffle(); // Перемешиваем существующую колоду перед каждым раундом
+    dealer.drawCard(deck);
 
-        dealer.drawCard(deck);
+    std::cout << "The dealer is showing: " << dealer.score() << '\n';
+    player.drawCard(deck);
 
-        std::cout << "The dealer is showing: " << dealer.score() << '\n';
+    if (playerTurn(deck, player)) {
+        return GameResult::DealerWon;
+    }
 
-        player.drawCard(deck);
-        player.drawCard(deck);
+    if (dealerTurn(deck, dealer)) {
+        return GameResult::PlayerWon;
+    }
+    if (player.score() == dealer.score()) {
+        return GameResult::IsTie;
+    }
 
-        if (playerTurn(deck, player)) {
-            return GameResult::DealerWon;
-        }
-
-        if (dealerTurn(deck, dealer)) {
-            return GameResult::PlayerWon;
-        }
-        if (player.score() == dealer.score()) {
-            return GameResult::IsTie;
-        }
-
-        return player.score() > dealer.score() ? GameResult::PlayerWon : GameResult::DealerWon;
+    return player.score() > dealer.score() ? GameResult::PlayerWon : GameResult::DealerWon;
 }
 
 bool Blackjack::isBust() {
